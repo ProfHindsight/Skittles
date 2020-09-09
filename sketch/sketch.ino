@@ -2,7 +2,7 @@
  * SERVO GLOBALS
  */
 #include <Servo.h>
-Servo servo
+Servo servo;
 #define PIN_SERVO       3
 
 /*
@@ -48,7 +48,7 @@ void setup() {
   /*
    * COLOR SENSOR SETUP
    */
-  tcs.begin()
+  tcs.begin();
 }
 
 void loop() {
