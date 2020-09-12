@@ -4,6 +4,9 @@
 #include <Servo.h>
 Servo servo;
 #define PIN_SERVO       3
+#define MIN_SERVO_POS   32
+#define MAX_SERVO_POS   120
+#define SERVO_DELAY     150
 
 /*
  * STEPPER GLOBALS
@@ -21,11 +24,33 @@ AccelStepper stepper(AccelStepper::DRIVER, PIN_STEP, PIN_DIRECTION); // Defaults
 #include "Adafruit_TCS34725.h"
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
 
+/*
+ * SERVO FUNCTIONS
+ */
+void servo_open(void)
+{
+  servo.write(MIN_SERVO_POS);
+}
+
+void servo_close(void)
+{
+  servo.write(MAX_SERVO_POS);
+}
+
+void servo_drop_skittle(void)
+{
+  servo_open();
+  delay(SERVO_DELAY);
+  servo_close();
+}
+
+
 void setup() {
   /*
    * DEBUG SETUP
    */
   Serial.begin(9600);
+  Serial.println("R, G, B");
 
   
   /*
@@ -41,9 +66,9 @@ void setup() {
    */
   // Set blocking pulse width in us
   stepper.setMinPulseWidth(1);
-  stepper.setMaxSpeed(100);
-  stepper.setAcceleration(20);
-  stepper.moveTo(500);
+  stepper.setMaxSpeed(100000);
+  stepper.setAcceleration(100000);
+//  stepper.moveTo(5000);
 
   /*
    * COLOR SENSOR SETUP
@@ -52,10 +77,51 @@ void setup() {
 }
 
 void loop() {
-   // If at the end of travel go to the other end
-  if (stepper.distanceToGo() == 0)
-    stepper.moveTo(-stepper.currentPosition());
+  if(Serial.available())
+  {
+    char c = Serial.read();
+    switch(c)
+    {
+      case 's':
+      
+        /*
+         * STEPPER TESTING CODE
+         */
+          if(stepper.currentPosition() == 500)
+          {
+            stepper.moveTo(-stepper.currentPosition());
+          }
+          else
+          {
+            stepper.moveTo(500);
+          }
+        
+      break;
+      case 'c':
+        /*
+         * COLOR SENSOR TESTING CODE
+         */
+        float red, green, blue;
+        tcs.getRGB(&red, &green, &blue);
+        Serial.print(int(red));
+        Serial.print(','); 
+        Serial.print(int(green)); 
+        Serial.print(',');
+        Serial.println(int(blue));
+      break;
+      case 'e':
+      
+        /*
+         * SERVO TESTING CODE
+         */
+        servo_drop_skittle();
 
+
+      break;
+    }
+    
+  }
+  
+  // This function must be called as often as possible and will step the motor once per call.
   stepper.run();
-
 }
