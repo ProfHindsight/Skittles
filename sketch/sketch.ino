@@ -113,7 +113,7 @@ void loop()
       Serial.print(',');
       Serial.println(int(blue));
 
-      Serial.print("Color Guess: ");
+      Serial.print("Bin assignment: ");
       Serial.println(bins.getBin(Color(red, green, blue)));
     }
     else if (c == 'e')
