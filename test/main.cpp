@@ -24,5 +24,4 @@ int main()
     check("insert 2nd bin", c2, 1, bins.getBin(c2));
     check("match 1st bin", c3, 0, bins.getBin(c3));
     check("insert overflow", c4, 2, bins.getBin(c4));
-
 }
