@@ -1,1 +1,7 @@
 .vs/
+.vscode/
+
+# Random compile artifacts.
+*.out
+*.o
+*.gch
