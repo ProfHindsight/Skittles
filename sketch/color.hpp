@@ -27,7 +27,7 @@ std::ostream &operator<<(std::ostream &o, const Color &c)
 class Bins
 {
 private:
-    const Color DefaultColor = Color{r : 0, g : 0, b : 0};
+    const Color DefaultColor = Color{r : SIZE_MAX, g : SIZE_MAX, b : SIZE_MAX};
     std::vector<Color> bins;
     std::function<bool(const Color &, const Color &)> equal;
 
