@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../color.hpp"
+#include "../sketch/color.hpp"
 
 void check(const std::string &testName, const Color &color, size_t expected, size_t actual)
 {
