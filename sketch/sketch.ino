@@ -24,7 +24,7 @@ AccelStepper stepper(AccelStepper::DRIVER, PIN_STEP, PIN_DIRECTION); // Defaults
 #include "Adafruit_TCS34725.h"
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
 
-#include <color.hpp>
+#include "color.hpp"
 const bins Bins;
 
 /*
@@ -77,7 +77,13 @@ void setup()
    */
   tcs.begin();
 
-  bins = Bins(3, 10.0f);
+  bins = Bins(3, [](const Color &lhs, const Color &rhs) -> bool {
+    auto mse = sqrt(
+        ((int16_t)lhs.r - (int16_t)rhs.r) * ((int16_t)lhs.r - (int16_t)rhs.r) +
+        ((int16_t)lhs.g - (int16_t)rhs.g) * ((int16_t)lhs.g - (int16_t)rhs.g) +
+        ((int16_t)lhs.b - (int16_t)rhs.b) * ((int16_t)lhs.b - (int16_t)rhs.b));
+    return mse < 10.0f;
+  });
 }
 
 void loop()

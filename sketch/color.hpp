@@ -1,29 +1,26 @@
 #ifndef __COLOR_HPP__
 #define __COLOR_HPP__
 
-#include <functional>
-#include <iostream>
 #include <math.h>
-#include <vector>
 
 struct Color
 {
-    size_t r;
-    size_t g;
-    size_t b;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
 
     Color()
     {
-        this->r = SIZE_MAX;
-        this->g = SIZE_MAX;
-        this->b = SIZE_MAX;
+        this->r = 0xFF;
+        this->g = 0xFF;
+        this->b = 0xFF;
     }
 
     Color(float r, float g, float b)
     {
-        this->r = size_t(r);
-        this->g = size_t(g);
-        this->b = size_t(b);
+        this->r = uint8_t(r);
+        this->g = uint8_t(g);
+        this->b = uint8_t(b);
     }
 
     bool operator==(const Color &rhs)
@@ -32,52 +29,31 @@ struct Color
     }
 };
 
-std::ostream &operator<<(std::ostream &o, const Color &c)
-{
-    o << "(" << c.r << ", " << c.g << ", " << c.b << ")";
-    return o;
-}
-
 class Bins
 {
 private:
     const Color DefaultColor = Color();
-    std::vector<Color> bins;
-    std::function<bool(const Color &, const Color &)> equal;
-
-    void initBinValues(size_t binCount)
-    {
-        this->bins = std::vector<Color>(binCount);
-        for (auto i = this->bins.begin(); i != this->bins.end(); i++)
-        {
-            *i = DefaultColor;
-        }
-    }
+    Color *bins;
+    size_t binCount;
+    bool (*equal)(const Color &, const Color &);
 
 public:
-    Bins(size_t binCount, float mseThreshold)
+    Bins(size_t binCount, bool (*equal)(const Color &, const Color &))
     {
-        this->initBinValues(binCount);
-
-        // Use default comparison.
-        this->equal = [mseThreshold](const Color &lhs, const Color &rhs) -> bool {
-            auto mse = sqrt(
-                ((long long)lhs.r - (long long)rhs.r) * ((long long)lhs.r - (long long)rhs.r) +
-                ((long long)lhs.g - (long long)rhs.g) * ((long long)lhs.g - (long long)rhs.g) +
-                ((long long)lhs.b - (long long)rhs.b) * ((long long)lhs.b - (long long)rhs.b));
-            return mse < mseThreshold;
-        };
+        this->binCount = binCount;
+        this->bins = new Color[binCount];
+        this->equal = equal;
     }
 
-    Bins(size_t binCount, std::function<bool(const Color &, const Color &)> equal)
+    ~Bins()
     {
-        this->initBinValues(binCount);
-        this->equal = equal;
+        this->bins = nullptr;
+        delete[] this->bins;
     }
 
     size_t getBin(const Color &color)
     {
-        for (size_t i = 0; i < this->bins.size(); i++)
+        for (size_t i = 0; i < this->binCount; i++)
         {
             // If this bin is empty, then automatically store the value here.
             if (this->bins[i] == this->DefaultColor)
@@ -96,21 +72,8 @@ public:
         }
 
         // No bin match, use overflow bin.
-        return this->bins.size();
+        return this->binCount;
     }
-
-    friend std::ostream &operator<<(std::ostream &o, const Bins &b);
 };
-
-std::ostream &operator<<(std::ostream &o, const Bins &b)
-{
-    o << "[ ";
-    for (auto i = b.bins.begin(); i != b.bins.end(); i++)
-    {
-        o << *i << " ";
-    }
-    o << "]";
-    return o;
-}
 
 #endif
