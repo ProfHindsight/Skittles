@@ -12,6 +12,20 @@ struct Color
     size_t g;
     size_t b;
 
+    Color()
+    {
+        this->r = SIZE_MAX;
+        this->g = SIZE_MAX;
+        this->b = SIZE_MAX;
+    }
+
+    Color(float r, float g, float b)
+    {
+        this->r = size_t(r);
+        this->g = size_t(g);
+        this->b = size_t(b);
+    }
+
     bool operator==(const Color &rhs)
     {
         return this->r == rhs.r && this->g == rhs.g && this->b == rhs.b;
@@ -27,7 +41,7 @@ std::ostream &operator<<(std::ostream &o, const Color &c)
 class Bins
 {
 private:
-    const Color DefaultColor = Color{r : SIZE_MAX, g : SIZE_MAX, b : SIZE_MAX};
+    const Color DefaultColor = Color();
     std::vector<Color> bins;
     std::function<bool(const Color &, const Color &)> equal;
 

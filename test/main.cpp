@@ -15,10 +15,10 @@ int main()
 {
     auto bins = Bins(2, 2.0f);
 
-    auto c1 = Color{r : 100, g : 100, b : 100};
-    auto c2 = Color{r : 50, g : 100, b : 150};
-    auto c3 = Color{r : 99, g : 99, b : 99};
-    auto c4 = Color{r : 200, g : 200, b : 200};
+    auto c1 = Color(100.0f, 100.0f, 100.0f);
+    auto c2 = Color(50.0f, 100.0f, 150.0f);
+    auto c3 = Color(99.0f, 99.0f, 99.0f);
+    auto c4 = Color(200.0f, 200.0f, 200.0f);
 
     check("insert 1st bin", c1, 0, bins.getBin(c1));
     check("insert 2nd bin", c2, 1, bins.getBin(c2));
