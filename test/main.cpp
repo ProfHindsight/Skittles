@@ -13,7 +13,7 @@ void check(const std::string &testName, const Color &color, size_t expected, siz
 
 int main()
 {
-    auto bins = Bins(2, 1000.0f);
+    auto bins = Bins(2, 2.0f);
 
     auto c1 = Color{r : 100, g : 100, b : 100};
     auto c2 = Color{r : 50, g : 100, b : 150};

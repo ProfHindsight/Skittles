@@ -48,9 +48,9 @@ public:
         // Use default comparison.
         this->equal = [mseThreshold](const Color &lhs, const Color &rhs) -> bool {
             auto mse = sqrt(
-                lhs.r - rhs.r * lhs.r - rhs.r +
-                lhs.g - rhs.g * lhs.g - rhs.g +
-                lhs.b - rhs.b * lhs.b - rhs.b);
+                (lhs.r - rhs.r) * (lhs.r - rhs.r) +
+                (lhs.g - rhs.g) * (lhs.g - rhs.g) +
+                (lhs.b - rhs.b) * (lhs.b - rhs.b));
             return mse < mseThreshold;
         };
     }
