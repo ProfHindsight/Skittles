@@ -1,5 +1,5 @@
-#ifndef __GATE_HPP__
-#define __GATE_HPP__
+#ifndef __SELECTOR_HPP__
+#define __SELECTOR_HPP__
 
 #include <AccelStepper.h>
 
@@ -26,9 +26,9 @@ class Selector
         }
     
     public:
-        Selector(uint8_t numberOfBins, uint16_t maxAngle, uint8_t stepPin, uint8_t directionPin)
+        Selector(uint8_t numberOfBins, uint16_t maxAngle, AccelStepper& stepper)
         {
-            this->stepper = stepper(AccelStepper::DRIVER, stepPin, directionPin);
+            this->stepper = stepper;
             
             if (maxAngle > 0 && maxAngle < 360)
             {
@@ -40,9 +40,9 @@ class Selector
             }
             
             
-            if (numberOfBins > 0 && numberOfBins < 360)
+            if (numberOfBins != 0)
             {
-                this->binDistance = int(numberOfStepsPerRevoluion * maxAngle / (numberOfBins+1));
+                this->binDistance = int(this->numberOfStepsPerRevolution * maxAngle / (numberOfBins + 1));
             }
             else
             {
@@ -75,9 +75,12 @@ class Selector
         {
             return this->numberOfBins;
         }
+
         void test(void)
         {
             this->moveTo(500);
             this->moveTo(0);
         }
-}
+};
+
+#endif
