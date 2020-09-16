@@ -1,11 +1,3 @@
-// Servo setup.
-#include <Servo.h>
-Servo servo;
-#define PIN_SERVO 3
-#define MIN_SERVO_POS 32
-#define MAX_SERVO_POS 120
-#define SERVO_DELAY 150
-
 // Stepper setup.
 #include <AccelStepper.h>
 #define PIN_STEP 7
@@ -28,32 +20,17 @@ const auto bins = Bins(3, [](const Color &lhs, const Color &rhs) -> bool {
     return mse < 10.0f;
 });
 
-void servo_open(void)
-{
-    servo.write(MIN_SERVO_POS);
-}
-
-void servo_close(void)
-{
-    servo.write(MAX_SERVO_POS);
-}
-
-void servo_drop_skittle(void)
-{
-    servo_open();
-    delay(SERVO_DELAY);
-    servo_close();
-}
+// Gate setup.
+#include "gate.hpp"
+const auto gate = Gate(3, 32, 120, 60, 500);
 
 void setup()
 {
     Serial.begin(9600);
     Serial.println("R, G, B");
 
-    // Initialize the pin
-    servo.attach(PIN_SERVO);
-    // Set the servo motor angle
-    servo.write(MAX_SERVO_POS);
+    // Move gate to load position.
+    gate.load();
 
     // Set blocking pulse width in us
     stepper.setMinPulseWidth(1);
@@ -96,10 +73,14 @@ void loop()
         }
         else if (c == 'e')
         {
+            Serial.println("Reading Skittle");
+            gate.read();
+
             Serial.println("Dropping Skittle");
-            servo.write(MIN_SERVO_POS);
-            delay(SERVO_DELAY);
-            servo.write(MAX_SERVO_POS);
+            gate.drop();
+
+            Serial.println("Loading Skittle");
+            gate.load();
         }
         else if (c == '\n')
             ;

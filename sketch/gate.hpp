@@ -13,9 +13,10 @@ private:
     uint16_t delayMs;
 
 public:
-    Gate(Servo servo, uint8_t dropPosition, uint8_t loadPosition, uint8_t readPosition, uint16_t delayMs)
+    Gate(uint8_t pin, uint8_t dropPosition, uint8_t loadPosition, uint8_t readPosition, uint16_t delayMs)
     {
-        this->servo = servo;
+        this->servo = Servo();
+        this->servo.attach(pin);
         this->dropPosition = dropPosition;
         this->loadPosition = loadPosition;
         this->readPosition = readPosition;
