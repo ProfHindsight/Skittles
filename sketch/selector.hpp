@@ -14,6 +14,7 @@ class Selector
         uint16_t maxAngle;
         uint32_t binDistance;
         uint32_t binOffset;
+        uint8_t numberOfBins;
         
         // 400 steps per revolution, 16th microstepping
         const uint32_t numberOfStepsPerRevolution = 6400;
@@ -48,6 +49,7 @@ class Selector
                 this->binDistance = 0;
             }
             this->binOffset = int(this->binDistance / 2);
+            this->numberOfBins = numberOfBins;
         }
 
         void begin(void)
@@ -69,6 +71,10 @@ class Selector
             this->moveTo(targetPos);
         }
 
+        uint8_t getBinCount(void)
+        {
+            return this->numberOfBins;
+        }
         void test(void)
         {
             this->moveTo(500);
