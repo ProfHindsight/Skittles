@@ -1,14 +1,3 @@
-#define NUM_BINS                5
-#define MAMAX_ANGLE             180
-
-// Selector Setup.
-#include <AccelStepper.h>
-// Define a stepper and the pins it will use
-AccelStepper stepper(AccelStepper::DRIVER, 7, 6); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
-
-#include "selector.hpp"
-const auto selector = Selector(NUM_BINS, MAX_ANGLE, &stepper);
-
 // RGB sensor setup.
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
@@ -16,7 +5,7 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS3472
 
 // Bin setup.
 #include "color.hpp"
-const auto bins = Bins(NUM_BINS, [](const Color &lhs, const Color &rhs) -> bool {
+const auto bins = Bins(5, [](const Color &lhs, const Color &rhs) -> bool {
     auto mse = sqrt(
         ((int16_t)lhs.r - (int16_t)rhs.r) * ((int16_t)lhs.r - (int16_t)rhs.r) +
         ((int16_t)lhs.g - (int16_t)rhs.g) * ((int16_t)lhs.g - (int16_t)rhs.g) +
@@ -24,9 +13,13 @@ const auto bins = Bins(NUM_BINS, [](const Color &lhs, const Color &rhs) -> bool 
     return mse < 10.0f;
 });
 
+// Selector Setup.
+#include "selector.hpp"
+const auto selector = Selector(bins.size(), 45, 7, 6);
+
 // Gate setup.
 #include "gate.hpp"
-const auto gate = Gate(3, 70, 0, 40, 500);
+const auto gate = Gate(70, 0, 40, 500);
 
 char data[100];
 
@@ -37,7 +30,7 @@ void setup()
     Serial.println("R, G, B, Bin Assignment");
 
     // Perform gate startup.
-    // gate.attach(3);
+    gate.attach(3);
     gate.load();
     gate.read();
 
@@ -64,12 +57,17 @@ void loop()
             }
         }
 
+        if (c == 'r')
+        {
+            selector.select(0);
+        }
+
         else if (c == 'c')
         {
             float red, green, blue;
             tcs.getRGB(&red, &green, &blue);
             uint8_t binAss = bins.getBin(Color(red, green, blue));
-            sprintf(data, "%d, %d, %d, %d", red, green, blue, binAss);
+            sprintf(data, "%d, %d, %d, %d", int(red), int(green), int(blue), int(binAss));
             Serial.println(data);
         }
 
@@ -93,7 +91,7 @@ void loop()
                 float red, green, blue;
                 tcs.getRGB(&red, &green, &blue);
                 uint8_t binAss = bins.getBin(Color(red, green, blue));
-                sprintf(data, "%d, %d, %d, %d", red, green, blue, binAss);
+                sprintf(data, "%d, %d, %d, %d", int(red), int(green), int(blue), int(binAss));
                 Serial.println(data);
                 selector.select(binAss);
                 gate.drop();

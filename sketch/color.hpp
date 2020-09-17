@@ -51,6 +51,11 @@ public:
         delete[] this->bins;
     }
 
+    uint8_t size()
+    {
+        return this->binCount + 1;
+    }
+
     size_t getBin(const Color &color)
     {
         for (size_t i = 0; i < this->binCount; i++)
