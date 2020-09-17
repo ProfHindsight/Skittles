@@ -1,15 +1,13 @@
-#define NUMBINS         5
-#define MAXANG          180
+#define NUM_BINS                5
+#define MAMAX_ANGLE             180
 
 // Selector Setup.
 #include <AccelStepper.h>
-#define PIN_STEP 7
-#define PIN_DIRECTION 6
 // Define a stepper and the pins it will use
-AccelStepper stepper(AccelStepper::DRIVER, PIN_STEP, PIN_DIRECTION); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
+AccelStepper stepper(AccelStepper::DRIVER, 7, 6); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
 
 #include "selector.hpp"
-const auto selector = Selector(NUMBINS, MAXANG, &stepper);
+const auto selector = Selector(NUM_BINS, MAX_ANGLE, &stepper);
 
 // RGB sensor setup.
 #include <Wire.h>
@@ -18,7 +16,7 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS3472
 
 // Bin setup.
 #include "color.hpp"
-const auto bins = Bins(NUMBINS, [](const Color &lhs, const Color &rhs) -> bool {
+const auto bins = Bins(NUM_BINS, [](const Color &lhs, const Color &rhs) -> bool {
     auto mse = sqrt(
         ((int16_t)lhs.r - (int16_t)rhs.r) * ((int16_t)lhs.r - (int16_t)rhs.r) +
         ((int16_t)lhs.g - (int16_t)rhs.g) * ((int16_t)lhs.g - (int16_t)rhs.g) +
