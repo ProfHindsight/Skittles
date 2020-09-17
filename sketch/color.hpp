@@ -18,6 +18,11 @@ struct Color
 
     Color(float r, float g, float b)
     {
+        this->from(r, g, b);
+    }
+
+    void from(float r, float g, float b)
+    {
         this->r = uint8_t(r);
         this->g = uint8_t(g);
         this->b = uint8_t(b);
@@ -34,8 +39,14 @@ class Bins
 private:
     const Color DefaultColor = Color();
     Color *bins;
+    Color blankColor = DefaultColor;
     size_t binCount;
     bool (*equal)(const Color &, const Color &);
+
+    bool isBlank(const Color &color)
+    {
+        return this->equal(color, this->blankColor);
+    }
 
 public:
     Bins(size_t binCount, bool (*equal)(const Color &, const Color &))
@@ -50,6 +61,11 @@ public:
         this->bins = nullptr;
         delete[] this->bins;
     }
+    
+    void setBlank(Color color)
+    {
+        this->blankColor = color;
+    }
 
     uint8_t size()
     {
@@ -58,6 +74,11 @@ public:
 
     size_t getBin(const Color &color)
     {
+        if (this->isBlank(color))
+        {
+            return -1;
+        }
+
         for (size_t i = 0; i < this->binCount; i++)
         {
             // If this bin is empty, then automatically store the value here.
