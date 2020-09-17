@@ -1,10 +1,3 @@
-// Stepper setup.
-#include <AccelStepper.h>
-#define PIN_STEP 7
-#define PIN_DIRECTION 6
-// Define a stepper and the pins it will use
-AccelStepper stepper(AccelStepper::DRIVER, PIN_STEP, PIN_DIRECTION); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
-
 // RGB sensor setup.
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
@@ -12,7 +5,7 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS3472
 
 // Bin setup.
 #include "color.hpp"
-const auto bins = Bins(3, [](const Color &lhs, const Color &rhs) -> bool {
+const auto bins = Bins(5, [](const Color &lhs, const Color &rhs) -> bool {
     auto mse = sqrt(
         ((int16_t)lhs.r - (int16_t)rhs.r) * ((int16_t)lhs.r - (int16_t)rhs.r) +
         ((int16_t)lhs.g - (int16_t)rhs.g) * ((int16_t)lhs.g - (int16_t)rhs.g) +
@@ -20,24 +13,31 @@ const auto bins = Bins(3, [](const Color &lhs, const Color &rhs) -> bool {
     return mse < 10.0f;
 });
 
+// Selector Setup.
+#include "selector.hpp"
+const auto selector = Selector(bins.size(), 45, 7, 6);
+
 // Gate setup.
 #include "gate.hpp"
-const auto gate = Gate(3, 32, 120, 60, 500);
+const auto gate = Gate(70, 0, 40, 500);
+
+char data[100];
 
 void setup()
 {
+    // Perform serial startup.
     Serial.begin(9600);
-    Serial.println("R, G, B");
+    Serial.println("R, G, B, Bin Assignment");
 
-    // Move gate to load position.
+    // Perform gate startup.
+    gate.attach(3);
     gate.load();
+    gate.read();
 
-    // Set blocking pulse width in us
-    stepper.setMinPulseWidth(1);
-    stepper.setMaxSpeed(100000);
-    stepper.setAcceleration(10000);
-    //  stepper.moveTo(5000);
+    // Perform selector startup.
+    selector.begin();
 
+    // Perform color sensor startup.
     tcs.begin();
 }
 
@@ -46,42 +46,60 @@ void loop()
     if (Serial.available())
     {
         char c = Serial.read();
+
         if (c == 's')
         {
-            Serial.println("Moving Stepper");
-            if (stepper.currentPosition() == 500)
+            Serial.println("Testing Selector");
+            for(uint8_t i = 0; i < selector.getBinCount(); i++)
             {
-                stepper.moveTo(-stepper.currentPosition());
-            }
-            else
-            {
-                stepper.moveTo(500);
+                selector.select(i);
+                delay(500);
             }
         }
+
+        if (c == 'r')
+        {
+            selector.select(0);
+        }
+
         else if (c == 'c')
         {
             float red, green, blue;
             tcs.getRGB(&red, &green, &blue);
-            Serial.print(int(red));
-            Serial.print(',');
-            Serial.print(int(green));
-            Serial.print(',');
-            Serial.println(int(blue));
-
-            Serial.print("Bin assignment: ");
-            Serial.println(bins.getBin(Color(red, green, blue)));
+            uint8_t binAss = bins.getBin(Color(red, green, blue));
+            sprintf(data, "%d, %d, %d, %d", int(red), int(green), int(blue), int(binAss));
+            Serial.println(data);
         }
+
         else if (c == 'e')
         {
-            Serial.println("Reading Skittle");
-            gate.read();
-
             Serial.println("Dropping Skittle");
             gate.drop();
 
             Serial.println("Loading Skittle");
             gate.load();
+
+            Serial.println("Reading Skittle");
+            gate.read();            
         }
+
+        // Some code to run 20 times.
+        else if (c == 'g')
+        {
+            for (uint8_t i = 0; i < 20; i++)
+            {
+                float red, green, blue;
+                tcs.getRGB(&red, &green, &blue);
+                uint8_t binAss = bins.getBin(Color(red, green, blue));
+                sprintf(data, "%d, %d, %d, %d", int(red), int(green), int(blue), int(binAss));
+                Serial.println(data);
+                selector.select(binAss);
+                gate.drop();
+                gate.load();
+                gate.read();
+            }
+        }
+
         else if (c == '\n')
             ;
         else if (c == '\r')
@@ -91,7 +109,4 @@ void loop()
             Serial.println(c);
         }
     }
-
-    // This function must be called as often as possible and will step the motor once per call.
-    stepper.run();
 }
