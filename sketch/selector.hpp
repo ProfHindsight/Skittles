@@ -25,7 +25,7 @@ class Selector
         {
             this->stepper = AccelStepper(AccelStepper::DRIVER, stepPin, directionPin);
             
-            if (maxAngle > 0 && maxAngle < 360)
+            if (maxAngle < 360)
             {
                 this->maxAngle = maxAngle;
             }
