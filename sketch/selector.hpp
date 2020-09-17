@@ -58,7 +58,10 @@ class Selector
             uint32_t targetPos = this->binDistance * bin;
 
             // Blocking function to move to target position
-            this->moveTo(targetPos);
+            if (targetPos < numberOfStepsPerRevolution)
+            {
+                this->moveTo(targetPos);
+            }
         }
 
         uint8_t getBinCount()

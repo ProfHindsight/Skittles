@@ -9,16 +9,16 @@ const auto bins = Bins(5, [](const Color &lhs, const Color &rhs) -> bool {
         ((int16_t)lhs.r - (int16_t)rhs.r) * ((int16_t)lhs.r - (int16_t)rhs.r) +
         ((int16_t)lhs.g - (int16_t)rhs.g) * ((int16_t)lhs.g - (int16_t)rhs.g) +
         ((int16_t)lhs.b - (int16_t)rhs.b) * ((int16_t)lhs.b - (int16_t)rhs.b));
-    return mse < 10.0f;
+    return mse < 15.0f;
 });
 
 // Selector Setup.
 #include "selector.hpp"
-const auto selector = Selector(bins.size(), 45, 7, 6);
+const auto selector = Selector(bins.size(), 90, 7, 6);
 
 // Gate setup.
 #include "gate.hpp"
-const auto gate = Gate(70, 0, 40, 500);
+const auto gate = Gate(75, 0, 40, 500);
 
 char data[100];
 
@@ -47,10 +47,10 @@ void setup()
 
 void loop()
 {
-    static uint8_t binAss;
+    static int16_t binAss;
     static Color color;
 
-    for(uint8_t i = 0; i < 5; i++)
+    for(uint8_t i = 0; i < 3; i++)
     {
         binAss = bins.getBin(sensor.read());
         if(binAss != -1)
@@ -63,8 +63,9 @@ void loop()
     
     if(binAss == -1)
     {
+        Serial.println("Exiting");
         selector.select(0);
-        exit(-1);
+        while(1);
     }
     
     color = sensor.getLast();

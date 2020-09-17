@@ -72,7 +72,7 @@ public:
         return this->binCount + 1;
     }
 
-    size_t getBin(const Color &color)
+    int16_t getBin(const Color &color)
     {
         if (this->isBlank(color))
         {
