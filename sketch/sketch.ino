@@ -20,6 +20,10 @@ const auto selector = Selector(bins.size(), 45, 7, 6);
 #include "gate.hpp"
 const auto gate = Gate(70, 0, 40, 500);
 
+// LEDs setup
+#include "leds.hpp"
+const auto leds = Leds(5, 9, 11 ,10);
+
 char data[100];
 
 void setup()
@@ -27,6 +31,9 @@ void setup()
     // Perform serial startup.
     Serial.begin(9600);
     Serial.println("R, G, B, Bin Assignment");
+
+    // Perform LED setup.
+    leds.begin();
 
     // Perform gate startup.
     gate.attach(3);
@@ -47,32 +54,44 @@ void setup()
 
 void loop()
 {
-    static uint8_t binAss;
-    static Color color;
+    // static uint8_t binAss;
+    // static Color color;
 
-    for(uint8_t i = 0; i < 5; i++)
-    {
-        binAss = bins.getBin(sensor.read());
-        if(binAss != -1)
-        {
-            break;
-        }
-        gate.load();
-        gate.read();
-    }
+    // for(uint8_t i = 0; i < 5; i++)
+    // {
+    //     binAss = bins.getBin(sensor.read());
+    //     if(binAss != -1)
+    //     {
+    //         break;
+    //     }
+    //     gate.load();
+    //     gate.read();
+    // }
     
-    if(binAss == -1)
-    {
-        selector.select(0);
-        exit(-1);
-    }
+    // if(binAss == -1)
+    // {
+    //     selector.select(0);
+    //     exit(-1);
+    // }
     
-    color = sensor.getLast();
-    sprintf(data, "%d, %d, %d, %d", color.r, color.g, color.b, binAss);
-    Serial.println(data);
+    // color = sensor.getLast();
+    // sprintf(data, "%d, %d, %d, %d", color.r, color.g, color.b, binAss);
+    // Serial.println(data);
 
-    selector.select(binAss);
-    gate.drop();
-    gate.load();
-    gate.read();
+    // selector.select(binAss);
+    // gate.drop();
+    // gate.load();
+    // gate.read();
+    leds.turnOn(Leds::white);
+    delay(1000);
+    leds.turnOff(Leds::white);
+    leds.turnOn(Leds::red);
+    delay(1000);
+    leds.turnOff(Leds::red);
+    leds.turnOn(Leds::green);
+    delay(1000);
+    leds.turnOff(Leds::green);
+    leds.turnOn(Leds::blue);
+    delay(1000);
+    leds.turnOff(Leds::blue);
 }

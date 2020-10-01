@@ -6,7 +6,7 @@
 class Leds
 {
 private:
-    uint8_t[4] ledPins;
+    uint8_t ledPins[4];
 
 public:
     Leds(uint8_t whitePin, uint8_t redPin, uint8_t greenPin, uint8_t bluePin)
@@ -17,13 +17,13 @@ public:
         this->ledPins[3] = bluePin;
     }
 
-    typedef enum led
+    typedef enum color
     {
         white = 0,
         red = 1,
         green = 2,
-        blue = 3;
-    } led_t;
+        blue = 3
+    } color_t;
 
     void begin()
     {
@@ -50,12 +50,12 @@ public:
         }
     }
 
-    void turnOn(led_t led)
+    void turnOn(color_t led)
     {
         digitalWrite(this->ledPins[led], HIGH);
     }
     
-    void turnOff(led_t led)
+    void turnOff(color_t led)
     {
         digitalWrite(this->ledPins[led], LOW);
     }
