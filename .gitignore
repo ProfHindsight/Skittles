@@ -1,5 +1,6 @@
 .vs/
 .vscode/
+build/
 
 # Random compile artifacts.
 *.out
