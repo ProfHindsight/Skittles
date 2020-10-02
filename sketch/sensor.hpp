@@ -32,6 +32,11 @@ public:
         return this->color;
     }
 
+    void getRaw(uint16_t &red, uint16_t &green, uint16_t &blue, uint16_t &white)
+    {
+        this->tcs.getRawData(&red, &green, &blue, &white);
+    }
+
     Color& getLast()
     {
         return this->color;

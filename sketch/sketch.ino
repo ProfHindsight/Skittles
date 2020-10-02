@@ -30,7 +30,8 @@ void setup()
 {
     // Perform serial startup.
     Serial.begin(9600);
-    Serial.println("R, G, B, Bin Assignment");
+    Serial.println("Xy where X is the RGB/Clear value and y is illuminating LED");
+    Serial.println("Rw,Gw,Bw,Ww,Rr,Gr,Br,Wr,Rg,Gg,Bg,Wg,Rb,Gb,Bb,Wb");
 
     // Perform LED setup.
     leds.begin();
@@ -56,7 +57,6 @@ void loop()
 {
     // static uint8_t binAss;
     // static Color color;
-
     // for(uint8_t i = 0; i < 5; i++)
     // {
     //     binAss = bins.getBin(sensor.read());
@@ -75,23 +75,37 @@ void loop()
     // }
     
     // color = sensor.getLast();
+
     // sprintf(data, "%d, %d, %d, %d", color.r, color.g, color.b, binAss);
     // Serial.println(data);
 
     // selector.select(binAss);
-    // gate.drop();
-    // gate.load();
-    // gate.read();
-    leds.turnOn(Leds::white);
-    delay(1000);
-    leds.turnOff(Leds::white);
-    leds.turnOn(Leds::red);
-    delay(1000);
-    leds.turnOff(Leds::red);
-    leds.turnOn(Leds::green);
-    delay(1000);
-    leds.turnOff(Leds::green);
-    leds.turnOn(Leds::blue);
-    delay(1000);
-    leds.turnOff(Leds::blue);
+    
+    uint16_t r,g,b,w;
+    for(int i = 0; i < 20; i++)
+    {
+        gate.drop();
+        gate.load();
+        gate.read();
+        leds.turnOn(Leds::white);
+        sensor.getRaw(&r, &g, &b, &w);
+        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
+        Serial.print(data);
+        leds.turnOff(Leds::white);
+        leds.turnOn(Leds::red);
+        sensor.getRaw(&r, &g, &b, &w);
+        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
+        Serial.print(data);
+        leds.turnOff(Leds::red);
+        leds.turnOn(Leds::green);
+        sensor.getRaw(&r, &g, &b, &w);
+        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
+        Serial.print(data);
+        leds.turnOff(Leds::green);
+        leds.turnOn(Leds::blue);
+        sensor.getRaw(&r, &g, &b, &w);
+        sprintf(data, "%d,%d,%d,%d", r, g, b, w);
+        Serial.println(data);
+        leds.turnOff(Leds::blue);
+    }
 }
