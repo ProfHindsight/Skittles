@@ -25,6 +25,7 @@ const auto gate = Gate(70, 0, 40, 500);
 const auto leds = Leds(5, 9, 11 ,10);
 
 char data[100];
+uint16_t r,g,b,w;
 
 void setup()
 {
@@ -53,7 +54,7 @@ void setup()
     selector.begin();
 
         
-    uint16_t r,g,b,w;
+    
     for(int i = 0; i < 20; i++)
     {
         gate.drop();
