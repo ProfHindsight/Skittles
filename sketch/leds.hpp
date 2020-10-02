@@ -59,6 +59,27 @@ public:
     {
         digitalWrite(this->ledPins[led], LOW);
     }
+
+    // Well if it's not going to be functional, at least we
+    // can make it LOOK like it's functional
+    void prettyColors(uint32_t delayMs)
+    {
+        this->allOn();
+        delay(delayMs);
+        this->allOff();
+        this->turnOn(this->red);
+        delay(delayMs);
+        this->turnOff(this->red);
+        this->turnOn(this->green);
+        delay(delayMs);
+        this->turnOff(this->green);
+        this->turnOn(this->blue;
+        delay(delayMs);
+        this->turnOff(this->blue);
+        this->turnOn(this->white);
+        delay(delayMs);
+        this->turnOff(this->white);
+    }
 };
 
 #endif

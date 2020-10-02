@@ -18,7 +18,7 @@ const auto selector = Selector(bins.size(), 45, 7, 6);
 
 // Gate setup.
 #include "gate.hpp"
-const auto gate = Gate(70, 0, 40, 500);
+const auto gate = Gate(75, 0, 40, 500);
 
 // LEDs setup
 #include "leds.hpp"
