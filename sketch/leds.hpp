@@ -73,7 +73,7 @@ public:
         this->turnOn(this->green);
         delay(delayMs);
         this->turnOff(this->green);
-        this->turnOn(this->blue;
+        this->turnOn(this->blue);
         delay(delayMs);
         this->turnOff(this->blue);
         this->turnOn(this->white);
