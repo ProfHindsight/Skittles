@@ -51,6 +51,35 @@ void setup()
 
     // Perform selector startup.
     selector.begin();
+
+        
+    uint16_t r,g,b,w;
+    for(int i = 0; i < 20; i++)
+    {
+        gate.drop();
+        gate.load();
+        gate.read();
+        leds.turnOn(Leds::white);
+        sensor.getRaw(&r, &g, &b, &w);
+        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
+        Serial.print(data);
+        leds.turnOff(Leds::white);
+        leds.turnOn(Leds::red);
+        sensor.getRaw(&r, &g, &b, &w);
+        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
+        Serial.print(data);
+        leds.turnOff(Leds::red);
+        leds.turnOn(Leds::green);
+        sensor.getRaw(&r, &g, &b, &w);
+        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
+        Serial.print(data);
+        leds.turnOff(Leds::green);
+        leds.turnOn(Leds::blue);
+        sensor.getRaw(&r, &g, &b, &w);
+        sprintf(data, "%d,%d,%d,%d", r, g, b, w);
+        Serial.println(data);
+        leds.turnOff(Leds::blue);
+    }
 }
 
 void loop()
@@ -80,32 +109,5 @@ void loop()
     // Serial.println(data);
 
     // selector.select(binAss);
-    
-    uint16_t r,g,b,w;
-    for(int i = 0; i < 20; i++)
-    {
-        gate.drop();
-        gate.load();
-        gate.read();
-        leds.turnOn(Leds::white);
-        sensor.getRaw(&r, &g, &b, &w);
-        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
-        Serial.print(data);
-        leds.turnOff(Leds::white);
-        leds.turnOn(Leds::red);
-        sensor.getRaw(&r, &g, &b, &w);
-        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
-        Serial.print(data);
-        leds.turnOff(Leds::red);
-        leds.turnOn(Leds::green);
-        sensor.getRaw(&r, &g, &b, &w);
-        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
-        Serial.print(data);
-        leds.turnOff(Leds::green);
-        leds.turnOn(Leds::blue);
-        sensor.getRaw(&r, &g, &b, &w);
-        sprintf(data, "%d,%d,%d,%d", r, g, b, w);
-        Serial.println(data);
-        leds.turnOff(Leds::blue);
-    }
+
 }
