@@ -32,7 +32,7 @@ void setup()
     // Perform serial startup.
     Serial.begin(9600);
     Serial.println("Xy where X is the RGB/Clear value and y is illuminating LED");
-    Serial.println("Rw,Gw,Bw,Ww,Rr,Gr,Br,Wr,Rg,Gg,Bg,Wg,Rb,Gb,Bb,Wb");
+    Serial.println("Rw,Gw,Bw,Ww,Rr,Gr,Br,Wr,Rg,Gg,Bg,Wg,Rb,Gb,Bb,Wb,Ra,Ga,Ba,Wa");
 
     // Perform LED setup.
     leds.begin();
@@ -81,9 +81,15 @@ void setup()
         leds.turnOn(Leds::blue);
         sensor.getRaw(&r, &g, &b, &w);
         sensor.getRaw(&r, &g, &b, &w);
+        sprintf(data, "%d,%d,%d,%d,", r, g, b, w);
+        Serial.print(data);
+        leds.turnOff(Leds::blue);
+        leds.allOn();
+        sensor.getRaw(&r, &g, &b, &w);
+        sensor.getRaw(&r, &g, &b, &w);
         sprintf(data, "%d,%d,%d,%d", r, g, b, w);
         Serial.println(data);
-        leds.turnOff(Leds::blue);
+        leds.allOff();
     }
 }
 
